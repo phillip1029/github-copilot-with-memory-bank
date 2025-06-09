@@ -1,0 +1,46 @@
+name: "Memory Bank Enabled Repository"
+description: "Repository template with GitHub Copilot Memory Bank system pre-configured"
+
+template:
+  include:
+    - .github/
+    - prompts/
+    - templates/
+    - workflows/
+    - examples/
+    - docs/
+    - contexts/
+    - install_memory_bank.sh
+    - install_memory_bank.ps1
+    - QUICK_START.md
+    - CONTRIBUTING.md
+    - LICENSE
+
+template_files:
+  - path: "contexts/active_context.md"
+    template: true
+  - path: ".memory_bank/SETUP_COMPLETE.md" 
+    template: true
+
+categories:
+  - development-tools
+  - github-copilot
+  - productivity
+  - workflows
+
+topics:
+  - github-copilot
+  - development-workflow
+  - memory-bank
+  - code-assistant
+  - productivity-tools
+  - structured-development
+
+features:
+  - "GitHub Copilot Memory Bank system"
+  - "Issue and PR templates with workflow integration"
+  - "Automated setup scripts (Bash & PowerShell)"
+  - "GitHub Actions for Memory Bank automation"
+  - "Context preservation across coding sessions"
+  - "Complexity-based development workflows"
+  - "Cross-IDE compatibility" 

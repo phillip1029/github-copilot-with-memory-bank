@@ -1,0 +1,390 @@
+name: Memory Bank Setup
+
+on:
+  workflow_dispatch:
+    inputs:
+      project_type:
+        description: 'Type of project (web, api, mobile, desktop, data)'
+        required: true
+        default: 'web'
+        type: choice
+        options:
+        - web
+        - api
+        - mobile
+        - desktop
+        - data
+        - other
+      
+      setup_docs:
+        description: 'Create documentation structure'
+        required: false
+        default: true
+        type: boolean
+      
+      setup_contexts:
+        description: 'Initialize context files'
+        required: false
+        default: true
+        type: boolean
+
+  push:
+    paths:
+      - '.github/workflows/memory_bank_setup.yml'
+
+jobs:
+  setup-memory-bank:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Create Memory Bank directory structure
+      run: |
+        echo "🚀 Setting up Memory Bank structure..."
+        
+        # Create directories if they don't exist
+        mkdir -p docs/memory_bank/{van_analysis,planning,creative_decisions,implementation_logs,reflections,archives}
+        mkdir -p contexts
+        mkdir -p .memory_bank/templates
+        
+        echo "📁 Created Memory Bank directories"
+
+    - name: Initialize context files
+      if: ${{ inputs.setup_contexts == true }}
+      run: |
+        echo "📝 Initializing context files..."
+        
+        # Create active context if it doesn't exist
+        if [ ! -f "contexts/active_context.md" ]; then
+          cat > contexts/active_context.md << 'EOF'
+        # Active Development Context
+        
+        *This file tracks the current development focus and maintains context across GitHub Copilot sessions.*
+        
+        ## Current Project Status
+        
+        ### Project Information
+        - **Project Name**: ${{ github.repository }}
+        - **Project Type**: ${{ inputs.project_type }}
+        - **Current Phase**: VAN (Starting Analysis)
+        - **Complexity Level**: [To be determined]
+        - **Last Updated**: $(date +"%Y-%m-%d")
+        
+        ### Active Development Focus
+        - **Current Feature/Component**: [Initial setup]
+        - **Priority Level**: High
+        - **Target Completion**: [To be determined]
+        - **Dependencies**: Memory Bank system setup
+        
+        ## Memory Bank Workflow Status
+        
+        ### Completed Phases
+        - [x] Repository setup
+        - [x] Memory Bank structure created
+        - [ ] VAN analysis
+        - [ ] Planning phase
+        - [ ] Implementation
+        
+        ### Next Steps
+        1. Run VAN analysis using prompts/van_mode.md
+        2. Determine project complexity level
+        3. Follow appropriate Memory Bank workflow
+        
+        ## Quick Reference
+        
+        ### Memory Bank Prompts
+        - VAN: `prompts/van_mode.md`
+        - PLAN: `prompts/plan_mode.md`
+        - CREATIVE: `prompts/creative_mode.md`
+        - IMPLEMENT: `prompts/implement_mode.md`
+        - REFLECT: `prompts/reflect_mode.md`
+        - ARCHIVE: `prompts/archive_mode.md`
+        - QA: `prompts/qa_validation.md`
+        
+        ---
+        *Update this file regularly to maintain context for productive GitHub Copilot sessions.*
+        EOF
+        fi
+
+    - name: Create project-specific documentation
+      if: ${{ inputs.setup_docs == true }}
+      run: |
+        echo "📚 Creating project documentation..."
+        
+        # Create project README section for Memory Bank
+        if [ ! -f "docs/memory_bank/README.md" ]; then
+          cat > docs/memory_bank/README.md << 'EOF'
+        # Memory Bank Documentation
+        
+        This directory contains all Memory Bank workflow documentation for this project.
+        
+        ## Structure
+        
+        - `van_analysis/` - VAN mode analysis documents
+        - `planning/` - PLAN mode implementation plans
+        - `creative_decisions/` - CREATIVE mode design explorations
+        - `implementation_logs/` - IMPLEMENT mode development logs
+        - `reflections/` - REFLECT mode review documents
+        - `archives/` - ARCHIVE mode comprehensive documentation
+        
+        ## Workflow
+        
+        1. **Start with VAN**: Use `../prompts/van_mode.md` for initial analysis
+        2. **Follow complexity-based path**: Based on VAN assessment
+        3. **Document everything**: Save outputs in appropriate directories
+        4. **Maintain context**: Update `../contexts/active_context.md` regularly
+        
+        ## Quick Links
+        
+        - [Complexity Guide](../workflows/complexity_level_guide.md)
+        - [Getting Started Example](../examples/getting_started_example.md)
+        - [Quick Start Guide](../QUICK_START.md)
+        EOF
+        fi
+
+    - name: Create Memory Bank setup instructions
+      run: |
+        echo "📋 Creating setup instructions..."
+        
+        cat > .memory_bank/SETUP_COMPLETE.md << 'EOF'
+        # Memory Bank Setup Complete! 🎉
+        
+        Your repository now has the Memory Bank system configured and ready to use.
+        
+        ## What was set up:
+        
+        ✅ **Directory Structure**
+        - `docs/memory_bank/` - Documentation storage
+        - `contexts/` - Active context tracking
+        - `.memory_bank/` - System templates
+        
+        ✅ **GitHub Integration**
+        - Issue templates with Memory Bank workflow
+        - Pull request templates with validation
+        - Automated setup workflow
+        
+        ✅ **Context Files**
+        - `contexts/active_context.md` - Current development focus
+        - Project-specific documentation structure
+        
+        ## Next Steps:
+        
+        1. **Start with VAN Analysis**:
+           - Copy prompt from `prompts/van_mode.md`
+           - Paste into GitHub Copilot Chat with `@workspace`
+           - Determine your project's complexity level
+        
+        2. **Follow the Workflow**:
+           - Level 1: VAN → IMPLEMENT → REFLECT
+           - Level 2: VAN → PLAN → IMPLEMENT → REFLECT
+           - Level 3-4: VAN → PLAN → CREATIVE → IMPLEMENT → REFLECT → ARCHIVE
+        
+        3. **Maintain Context**:
+           - Update `contexts/active_context.md` regularly
+           - Save important outputs in `docs/memory_bank/`
+           - Use GitHub issues and PRs with Memory Bank templates
+        
+        ## Resources:
+        
+        - [Memory Bank Repository](https://github.com/phillip1029/github-copilot-with-memory-bank)
+        - [Quick Start Guide](QUICK_START.md)
+        - [Complexity Assessment](workflows/complexity_level_guide.md)
+        
+        Happy coding with Memory Bank! 🚀
+        EOF
+
+    - name: Create GitHub Copilot instruction files
+      run: |
+        echo "📝 Creating GitHub Copilot instruction files..."
+        
+        # Create .copilot directory for instruction files
+        mkdir -p .copilot/instructions
+        mkdir -p docs/instructions
+        
+        # Copy Memory Bank prompts as instruction files with descriptive names
+        cp prompts/van_mode.md .copilot/instructions/01-van-analysis.md
+        cp prompts/plan_mode.md .copilot/instructions/02-planning-architecture.md
+        cp prompts/creative_mode.md .copilot/instructions/03-creative-design.md
+        cp prompts/implement_mode.md .copilot/instructions/04-implementation.md
+        cp prompts/reflect_mode.md .copilot/instructions/05-reflection-review.md
+        cp prompts/archive_mode.md .copilot/instructions/06-archive-documentation.md
+        cp prompts/qa_validation.md .copilot/instructions/07-quality-assurance.md
+        
+        # Create easy-access instruction files in docs
+        cp prompts/van_mode.md docs/instructions/van-analysis-instructions.md
+        cp prompts/plan_mode.md docs/instructions/planning-instructions.md
+        cp prompts/creative_mode.md docs/instructions/creative-instructions.md
+        cp prompts/implement_mode.md docs/instructions/implementation-instructions.md
+        cp prompts/reflect_mode.md docs/instructions/reflection-instructions.md
+        cp prompts/archive_mode.md docs/instructions/archive-instructions.md
+        cp prompts/qa_validation.md docs/instructions/qa-instructions.md
+        
+        # Create a master instruction file for quick access
+        cat > .copilot/MEMORY_BANK_INSTRUCTIONS.md << 'EOF'
+        # Memory Bank Instructions for GitHub Copilot
+        
+        *Quick access to all Memory Bank prompts for use as GitHub Copilot context/instructions*
+        
+        ## How to Use
+        
+        1. **Right-click any instruction file** below in your IDE
+        2. **Select "Add as Context"** or "Use as Instructions" 
+        3. **Chat with GitHub Copilot** using the Memory Bank methodology
+        
+        ## Available Instructions
+        
+        ### Core Workflow Instructions
+        - [`01-van-analysis.md`](.copilot/instructions/01-van-analysis.md) - Initial validation & analysis
+        - [`02-planning-architecture.md`](.copilot/instructions/02-planning-architecture.md) - Planning & architecture decisions
+        - [`03-creative-design.md`](.copilot/instructions/03-creative-design.md) - Creative design exploration
+        - [`04-implementation.md`](.copilot/instructions/04-implementation.md) - Code implementation
+        - [`05-reflection-review.md`](.copilot/instructions/05-reflection-review.md) - Review & reflection
+        - [`06-archive-documentation.md`](.copilot/instructions/06-archive-documentation.md) - Documentation & archiving
+        - [`07-quality-assurance.md`](.copilot/instructions/07-quality-assurance.md) - Quality assurance validation
+        
+        ### Alternative Locations
+        - `docs/instructions/` - Human-readable instruction copies
+        - `prompts/` - Original prompt template files
+        - `contexts/active_context.md` - Current project context
+        
+        ## Workflow Paths by Complexity
+        
+        **Level 1 (Simple):** VAN → IMPLEMENT → REFLECT
+        **Level 2 (Moderate):** VAN → PLAN → IMPLEMENT → REFLECT  
+        **Level 3-4 (Complex):** VAN → PLAN → CREATIVE → IMPLEMENT → REFLECT → ARCHIVE
+        
+        ## Quick Start
+        
+        1. Start with `01-van-analysis.md` for any new task
+        2. Follow the recommended workflow path based on complexity
+        3. Use `07-quality-assurance.md` at any phase for validation
+        4. Update `contexts/active_context.md` regularly
+        
+        ---
+        *Right-click any instruction file above and select "Add as Context" to get started!*
+        EOF
+        
+        # Create a root-level instructions file for easy discovery
+        cat > COPILOT_INSTRUCTIONS.md << 'EOF'
+        # GitHub Copilot Memory Bank Instructions
+        
+        This repository includes Memory Bank methodology instructions optimized for GitHub Copilot.
+        
+        ## Quick Access Instructions
+        
+        **For GitHub Copilot Context/Instructions:**
+        
+        1. **Analysis & Planning:**
+           - [VAN Analysis](.copilot/instructions/01-van-analysis.md) - Start here for any new task
+           - [Planning & Architecture](.copilot/instructions/02-planning-architecture.md) - For Level 2+ complexity
+           - [Creative Design](.copilot/instructions/03-creative-design.md) - For Level 3-4 complexity
+        
+        2. **Implementation & Review:**
+           - [Implementation](.copilot/instructions/04-implementation.md) - Structured coding approach
+           - [Quality Assurance](.copilot/instructions/07-quality-assurance.md) - Validation at any phase
+           - [Reflection & Review](.copilot/instructions/05-reflection-review.md) - Post-implementation analysis
+        
+        3. **Documentation:**
+           - [Archive & Documentation](.copilot/instructions/06-archive-documentation.md) - Comprehensive documentation
+        
+        ## How to Use with GitHub Copilot
+        
+        ### Method 1: Add as Context (Recommended)
+        1. Right-click on any instruction file above
+        2. Select "Add as Context" or "Use as Instructions"
+        3. GitHub Copilot will use that methodology in your chat
+        
+        ### Method 2: Copy-Paste Approach
+        1. Open the instruction file you need
+        2. Copy the entire content
+        3. Paste into GitHub Copilot Chat with `@workspace`
+        
+        ### Method 3: Reference Active Context
+        - Always keep [`contexts/active_context.md`](contexts/active_context.md) updated
+        - Reference it in GitHub Copilot for current project state
+        - Use `@workspace` to include full project context
+        
+        ## Workflow Decision Tree
+        
+        ```
+        New Task/Feature?
+        │
+        ├─ Start with: VAN Analysis (01-van-analysis.md)
+        │
+        ├─ Complexity Level 1? → Implementation (04-implementation.md)
+        │
+        ├─ Complexity Level 2? → Planning (02-planning-architecture.md) → Implementation
+        │
+        └─ Complexity Level 3-4? → Planning → Creative Design (03-creative-design.md) → Implementation
+        
+        After Implementation:
+        │
+        ├─ Always: Reflection & Review (05-reflection-review.md)
+        │
+        ├─ Level 3-4: Archive & Documentation (06-archive-documentation.md)
+        │
+        └─ Any Phase: Quality Assurance (07-quality-assurance.md)
+        ```
+        
+        ## Project Context Files
+        
+        - **Active Context:** [`contexts/active_context.md`](contexts/active_context.md) - Current development focus
+        - **Documentation:** [`docs/memory_bank/`](docs/memory_bank/) - Project documentation storage
+        - **Templates:** [`templates/`](templates/) - Reusable templates
+        - **Examples:** [`examples/`](examples/) - Usage examples
+        
+        ---
+        
+        **Ready to start?** Right-click [VAN Analysis](.copilot/instructions/01-van-analysis.md) and select "Add as Context" to begin your Memory Bank workflow!
+        EOF
+
+    - name: Create commit with Memory Bank setup
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        
+        git add .
+        
+        # Only commit if there are changes
+        if ! git diff --staged --quiet; then
+          git commit -m "🚀 Setup Memory Bank system for ${{ inputs.project_type }} project
+          
+          - Created Memory Bank directory structure
+          - Initialized context files for GitHub Copilot
+          - Added project-specific documentation
+          - Configured for ${{ inputs.project_type }} development
+          
+          Ready to start with VAN analysis!
+          "
+          git push
+          echo "✅ Memory Bank setup committed to repository"
+        else
+          echo "ℹ️ No changes to commit - Memory Bank already set up"
+        fi
+
+    - name: Create setup summary
+      run: |
+        echo "## 🎉 Memory Bank Setup Complete!" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "Your ${{ inputs.project_type }} project is now equipped with the Memory Bank system!" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "### What's Ready:" >> $GITHUB_STEP_SUMMARY
+        echo "- ✅ Directory structure created" >> $GITHUB_STEP_SUMMARY
+        echo "- ✅ Context files initialized" >> $GITHUB_STEP_SUMMARY
+        echo "- ✅ GitHub templates configured" >> $GITHUB_STEP_SUMMARY
+        echo "- ✅ Documentation structure ready" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "### Next Steps:" >> $GITHUB_STEP_SUMMARY
+        echo "1. **Start VAN Analysis**: Use \`prompts/van_mode.md\` with GitHub Copilot" >> $GITHUB_STEP_SUMMARY
+        echo "2. **Create First Issue**: Use the Memory Bank issue templates" >> $GITHUB_STEP_SUMMARY
+        echo "3. **Follow Workflow**: Based on complexity assessment" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "### Resources:" >> $GITHUB_STEP_SUMMARY
+        echo "- [Quick Start Guide](QUICK_START.md)" >> $GITHUB_STEP_SUMMARY
+        echo "- [Complexity Guide](workflows/complexity_level_guide.md)" >> $GITHUB_STEP_SUMMARY
+        echo "- [Example Walkthrough](examples/getting_started_example.md)" >> $GITHUB_STEP_SUMMARY 
